@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class HospitalAnalyst extends User
+class Admin extends User
 {
     use HasFactory;
 
@@ -15,14 +15,9 @@ class HospitalAnalyst extends User
     protected static function boot()
     {
         parent::boot();
-        static::addGlobalScope('hospitalAnalysts', function (Builder $builder) {
-            $builder->where('role', '=',User::ROLE_HOSPITAL_ANALYST);
+        static::addGlobalScope('admin', function (Builder $builder) {
+            $builder->where('role', '=',User::ROLE_Admin);
         });
-    }
-
-    public function hospital()
-    {
-        return $this->belongsTo(Hospital::class, 'hospital_id', 'id');
     }
 
 }

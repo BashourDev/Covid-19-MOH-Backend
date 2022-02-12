@@ -20,4 +20,13 @@ class PatientAnalyst extends User
         });
     }
 
+    public function hospital()
+    {
+        return $this->belongsTo(Hospital::class, 'hospital_id', 'id');
+    }
+
+    public function patients()
+    {
+        return $this->hasMany(Patient::class, 'patientAnalyst_id', 'id');
+    }
 }
