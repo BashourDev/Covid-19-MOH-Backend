@@ -22,7 +22,9 @@ class CreatePatientsTable extends Migration
             $table->string('name');
             $table->date('birthday');
             $table->integer('gender');
+            $table->string('job');
             $table->string('address');
+            $table->integer('landline');
             $table->integer('mobileNumber');
             $table->string('bloodType');
             $table->double('height')->nullable();

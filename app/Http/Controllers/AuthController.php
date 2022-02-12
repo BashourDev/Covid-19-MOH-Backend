@@ -10,12 +10,11 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         if (Auth::attempt([
-            'email'=>$request->get('email'),
+            'username'=>$request->get('username'),
             'password'=>$request->get('password')
         ])){
             $token=Auth::user()->createToken('myToken'.Auth::user()->id)->plainTextToken;
             return \response(['user'=>Auth::user(),'token'=>$token]);
-
         }
 
         else {
