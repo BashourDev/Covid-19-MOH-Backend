@@ -9,6 +9,9 @@ class Hospital extends Model
 {
     use HasFactory;
 
+    const HOSPITAL_PUBLIC = 0;
+    const HOSPITAL_PRIVATE = 1;
+
     protected $fillable = ['name', 'type', 'emergencyBeds', 'emergencyReservedBeds', 'intensiveCareBeds', 'intensiveCareReservedBeds', 'ventilators', 'reservedVentilators'];
 
 

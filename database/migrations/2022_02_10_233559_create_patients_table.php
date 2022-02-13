@@ -16,12 +16,13 @@ class CreatePatientsTable extends Migration
         Schema::create('patients', function (Blueprint $table) {
             // first part
             $table->id();
+            $table->integer('step');
             $table->foreignId('hospital_id');
             $table->foreignId('patientAnalyst_id');
             $table->string('doctor');
             $table->string('name');
             $table->date('birthday');
-            $table->integer('gender');
+            $table->boolean('gender'); //false for male, true for female
             $table->string('job');
             $table->string('address');
             $table->integer('landline');
@@ -80,8 +81,8 @@ class CreatePatientsTable extends Migration
             $table->boolean('renalInsufficiencyTests')->nullable();
 
             // antecedents of coronal metaphors or expansions
-            $table->boolean('hasAntecedentsOfCoronalMetaphorsRrExpansions')->nullable();
-            $table->string('antecedentsOfCoronalMetaphorsRrExpansionsMedications')->nullable();
+            $table->boolean('hasAntecedentsOfCoronalMetaphorsOrExpansions')->nullable();
+            $table->string('antecedentsOfCoronalMetaphorsOrExpansionsMedications')->nullable();
 
             // breathing difficulties or asthma
             $table->boolean('BreathingDifficultiesOrAsthma')->nullable();
@@ -112,8 +113,8 @@ class CreatePatientsTable extends Migration
             $table->string('smokingQuantityAndDuration')->nullable();
             $table->boolean('smokingQuitter')->nullable();
             $table->string('smokingQuitterQuantityAndDuration')->nullable();
-            $table->boolean('hookah')->nullable();
-            $table->boolean('hookahType')->nullable(); // true for private false for public
+            $table->boolean('privateHookah')->nullable();
+            $table->boolean('publicHookah')->nullable();
 
             // alcohol
             $table->boolean('alcoholic')->nullable();
@@ -159,6 +160,9 @@ class CreatePatientsTable extends Migration
             $table->dateTime('releaseDateTime')->nullable();
             $table->string('statusUponRelease')->nullable();
             $table->string('bloodGasUponRelease')->nullable();
+            $table->dateTime('bloodPressureUponRelease')->nullable();
+            $table->string('pulseUponRelease')->nullable();
+            $table->string('oxygenationUponRelease')->nullable();
             $table->string('wbc')->nullable();
             $table->string('crp')->nullable();
             $table->string('residencyPeriod')->nullable();
