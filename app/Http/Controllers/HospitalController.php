@@ -61,7 +61,7 @@ class HospitalController extends Controller
      */
     public function update(Request $request, Hospital $hospital)
     {
-        $hospital->update([$request->only('name', 'type', 'location', 'emergencyBeds', 'intensiveCareReservedBeds', 'reservedVentilators')]);
+        $hospital->update($request->only(['name', 'type', 'location', 'emergencyBeds', 'intensiveCareReservedBeds', 'reservedVentilators']));
         $hospital->patientAnalyst()->first()->update([
             'name' => $request->get('patientAnalystName'),
             'username' => $request->get('patientAnalystUsername'),
