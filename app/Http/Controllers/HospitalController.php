@@ -88,12 +88,12 @@ class HospitalController extends Controller
 
     public function publicHospitals(Request $request)
     {
-        return response(Hospital::all()->where('type', '=', Hospital::HOSPITAL_PUBLIC)->where('name', 'like', '%'.$request->get('name').'%')->get());
+        return response(Hospital::query()->where('type', '=', Hospital::HOSPITAL_PUBLIC)->where('name', 'like', '%'.$request->get('name').'%')->get());
     }
 
     public function privateHospitals(Request $request)
     {
-        return response(Hospital::all()->where('type', '=', Hospital::HOSPITAL_PRIVATE)->where('name', 'like', '%'.$request->get('name').'%')->get());
+        return response(Hospital::query()->where('type', '=', Hospital::HOSPITAL_PRIVATE)->where('name', 'like', '%'.$request->get('name').'%')->get());
     }
 
     public function addReport(Request $request, Hospital $hospital)
