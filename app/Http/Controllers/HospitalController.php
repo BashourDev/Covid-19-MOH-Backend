@@ -121,7 +121,7 @@ class HospitalController extends Controller
     {
         $query = Hospital::query();
         if ($request->get('name')) {
-            $query = $query->where('name', 'like', '%'.$request->get('name'));
+            $query = $query->where('name', 'like', '%'.$request->get('name').'%');
         }
         if ($request->get('start') && $request->get('end')) {
             $query = $query->whereBetween('updated_at', [$request->get('start'), $request->get('end')]);
