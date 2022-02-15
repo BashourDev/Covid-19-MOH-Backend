@@ -15,7 +15,7 @@ class Admin extends User
     protected static function boot()
     {
         parent::boot();
-        static::addGlobalScope('admin', function (Builder $builder) {
+        static::addGlobalScope('admins', function (Builder $builder) {
             $builder->where('role', '=',User::ROLE_Admin);
         });
     }

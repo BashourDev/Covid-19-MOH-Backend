@@ -17,8 +17,8 @@ class CreatePatientsTable extends Migration
             // first part
             $table->id();
             $table->integer('step');
-            $table->foreignId('hospital_id');
-            $table->foreignId('patientAnalyst_id');
+            $table->foreignId('hospital_id')->constrained('hospitals')->onDelete('cascade');
+            $table->foreignId('patientAnalyst_id')->constrained('users')->onDelete('cascade');
             $table->string('doctor');
             $table->string('name');
             $table->date('birthday');

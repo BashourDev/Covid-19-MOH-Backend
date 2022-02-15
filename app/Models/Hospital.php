@@ -9,6 +9,8 @@ class Hospital extends Model
 {
     use HasFactory;
 
+    protected $with = ['patientAnalyst:id,name,username', 'hospitalAnalyst:id,name,username'];
+
     const HOSPITAL_PUBLIC = 0;
     const HOSPITAL_PRIVATE = 1;
 

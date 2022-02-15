@@ -19,11 +19,11 @@ class CreateHospitalsTable extends Migration
             $table->integer('type'); // 0 for public, 1 for private
             $table->string('location');
             $table->integer('emergencyBeds');
-            $table->integer('emergencyReservedBeds');
+            $table->integer('emergencyReservedBeds')->nullable();
             $table->integer('intensiveCareBeds');
-            $table->integer('intensiveCareReservedBeds');
+            $table->integer('intensiveCareReservedBeds')->nullable();
             $table->integer('ventilators');
-            $table->integer('reservedVentilators');
+            $table->integer('reservedVentilators')->nullable();
             $table->timestamps();
         });
     }

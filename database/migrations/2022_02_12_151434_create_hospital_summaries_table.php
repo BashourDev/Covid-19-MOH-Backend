@@ -15,8 +15,8 @@ class CreateHospitalSummariesTable extends Migration
     {
         Schema::create('hospital_summaries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('hospital_id');
-            $table->foreignId('hospitalAnalyst_id');
+            $table->foreignId('hospital_id')->constrained('hospitals')->onDelete('cascade');
+            $table->foreignId('hospitalAnalyst_id')->constrained('users')->onDelete('cascade');
             $table->integer('emergencyBeds');
             $table->integer('emergencyReservedBeds');
             $table->integer('intensiveCareBeds');

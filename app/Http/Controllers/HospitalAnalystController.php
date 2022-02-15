@@ -14,7 +14,7 @@ class HospitalAnalystController extends Controller
      */
     public function index()
     {
-        //
+        return response(HospitalAnalyst::all()->get());
     }
 
     /**
@@ -36,7 +36,7 @@ class HospitalAnalystController extends Controller
      */
     public function show(HospitalAnalyst $hospitalAnalyst)
     {
-        //
+        return response($hospitalAnalyst);
     }
 
     /**

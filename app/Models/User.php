@@ -46,4 +46,27 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function cast()
+    {
+        $newClass = "App\\Models\\";
+        switch ($this->role) {
+            case User::ROLE_Admin:
+                $newClass .= 'Admin';
+                break;
+            case User::ROLE_PATIENT_ANALYST:
+                $newClass .= "PatientAnalyst";
+                break;
+            case User::ROLE_HOSPITAL_ANALYST:
+                $newClass .= "HospitalAnalyst";
+                break;
+        }
+        $obj = new $newClass;
+        foreach (get_object_vars($this) as $key => $name) {
+            $obj->$key = $name;
+        }
+        return $obj;
+    }
+
 }
