@@ -14,7 +14,7 @@ class Hospital extends Model
     const HOSPITAL_PUBLIC = 0;
     const HOSPITAL_PRIVATE = 1;
 
-    protected $fillable = ['name', 'type', 'emergencyBeds', 'emergencyReservedBeds', 'intensiveCareBeds', 'intensiveCareReservedBeds', 'ventilators', 'reservedVentilators'];
+    protected $fillable = ['name', 'type', 'location', 'emergencyBeds', 'emergencyReservedBeds', 'intensiveCareBeds', 'intensiveCareReservedBeds', 'ventilators', 'reservedVentilators'];
 
 
     public function patients()

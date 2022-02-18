@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Hospital;
 use App\Models\Patient;
 use Illuminate\Http\Request;
 
@@ -36,7 +37,7 @@ class PatientController extends Controller
      */
     public function show(Patient $patient)
     {
-        //
+        return response($patient);
     }
 
     /**
@@ -59,6 +60,154 @@ class PatientController extends Controller
      */
     public function destroy(Patient $patient)
     {
-        //
+        return response($patient->delete());
     }
+
+    public function hospitalPatients(Request $request)
+    {
+        return response(auth()->user()->cast()->hospital->patients()->where('name', 'like', '%'.$request->get('searchKey').'%')->get());
+    }
+
+    public function firstStep(Request $request, Hospital $hospital)
+    {
+            return response($hospital->patients()->create([
+                'step' => 1,
+                'patientAnalyst_id' => auth()->user()->id,
+                'doctor' => $request->get('doctor'),
+                'name' => $request->get('name'),
+                'birthday' => $request->get('birthday'),
+                'gender' => $request->get('gender'),
+                'job' => $request->get('job'),
+                'address' => $request->get('address'),
+                'landline'  => $request->get('landline'),
+                'mobileNumber' => $request->get('mobileNumber'),
+                'bloodType' => $request->get('bloodType'),
+                'height' => $request->get('height'),
+                'weight' => $request->get('weight')
+            ]));
+    }
+
+    public function secondStep(Request $request, Patient $patient)
+    {
+        if ($patient->step < 2) {
+            $patient->step = 2;
+        }
+        return response($patient->update($request->only(['symptomDaysBeforeAdmission',
+                'reasonOfAdmission',
+                'hasFever',
+                'temperature',
+                'daysOfPreAdmissionFever',
+                'responseToCetamol',
+                'fatigue',
+                'dryThroat',
+                'sweating',
+                'dehydration',
+                'lossOfSmellAndTaste',
+                'neuralSymptoms',
+                'structuralSymptoms',
+                'cardiacSymptoms',
+                'digestiveSymptoms',
+                'vascularSymptoms',
+                'urinarySymptoms',
+                'skinSymptoms',
+                'ocularSymptoms',
+                'chestListening',
+                'oxygenationUponAdmission',
+                'reproductiveActivity',
+                'isPregnant',
+                'ageOfFetus',
+                'bloodGasUponAdmission',
+                'arterialHypertension',
+                'arterialHypertensionMedications',
+                'diabetes',
+                'diabetesOralTreatment',
+                'diabetesInsulinTreatment',
+                'diabetesInsulinType',
+                'diabetesMixedOralAndInsulinTreatment',
+                'highCholesterolAndTriglycerides',
+                'cholesterolAndTriglycerides',
+                'renalInsufficiency',
+                'renalInsufficiencyTests',
+                'hasAntecedentsOfCoronalMetaphorsOrExpansions',
+                'antecedentsOfCoronalMetaphorsOrExpansionsMedications',
+                'BreathingDifficultiesOrAsthma',
+                'BreathingDifficultiesOrAsthmaTreatment',
+                'otherRespiratoryProblems',
+                'arthritis',
+                'arthritisMedications',
+                'osteoporosis',
+                'osteoporosisMedications',
+                'hasLiverDisease',
+                'liverDisease',
+                'hasDepressionOrAnxiety',
+                'depressionOrAnxietyMedications',
+                'otherDiseases',
+                'otherMedications',
+                'isSmoker',
+                'smokingQuantityAndDuration',
+                'smokingQuitter',
+                'smokingQuitterQuantityAndDuration',
+                'privateHookah',
+                'publicHookah',
+                'alcoholic',
+                'hasDiet',
+                'diet',
+                'physicalSports',
+                'physicalSportsType',
+                'physicalSportsPace',
+                'woreFaceMask',
+                'handWashing',
+                'avoidCrowds',
+                'contactedFamilyMembers',
+                'familyMembersWithCovidSymptoms'])));
+    }
+
+    public function thirdStep(Request $request, Patient $patient)
+    {
+        if ($patient->step < 3) {
+            $patient->step = 3;
+        }
+        return response($patient->update($request->only(['treatmentCourse',
+                'givenAntivirus',
+                'givenAntivirusType',
+                'ctReport',
+                'tests',
+                'pcrResult',
+                'requiredVentilation',
+                'ventilationDuration',
+                'clinicalImprovement',
+                'daysOfFever',
+                'mixing'])));
+    }
+
+    public function fourthStep(Request $request, Patient $patient)
+    {
+        if ($patient->step < 4) {
+            $patient->step = 4;
+        }
+        return response($patient->update($request->only(['death',
+                'deathDateTime',
+                'release',
+                'releaseDateTime',
+                'statusUponRelease',
+                'bloodGasUponRelease',
+                'bloodPressureUponRelease',
+                'pulseUponRelease',
+                'oxygenationUponRelease',
+                'wbc',
+                'crp',
+                'residencyPeriod'])));
+    }
+
+    public function fifthStep(Request $request, Patient $patient)
+    {
+        if ($patient->step < 5) {
+            $patient->step = 5;
+        }
+        return response($patient->update($request->only(['returnToWorkOrNormalLife',
+                'dyspnea',
+                'laborOnLightOrMediumEfforts',
+                'otherDemonstrations'])));
+    }
+
 }

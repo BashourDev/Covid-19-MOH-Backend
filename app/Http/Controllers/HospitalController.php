@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Hospital;
 use App\Models\HospitalSummary;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -27,16 +28,18 @@ class HospitalController extends Controller
      */
     public function store(Request $request)
     {
-        $hospital = Hospital::query()->create($request->only(['name', 'type', 'location', 'emergencyBeds', 'intensiveCareReservedBeds', 'reservedVentilators']));
+        $hospital = Hospital::query()->create($request->only(['name', 'type', 'location', 'emergencyBeds', 'intensiveCareBeds', 'ventilators']));
         $hospital->patientAnalyst()->create([
+            'role' => User::ROLE_PATIENT_ANALYST,
             'name' => $request->get('patientAnalystName'),
             'username' => $request->get('patientAnalystUsername'),
-            'password' => $request->get('patientAnalystPassword')
+            'password' => bcrypt($request->get('patientAnalystPassword'))
         ]);
         $hospital->hospitalAnalyst()->create([
+            'role' => User::ROLE_HOSPITAL_ANALYST,
             'name' => $request->get('hospitalAnalystName'),
             'username' => $request->get('hospitalAnalystUsername'),
-            'password' => $request->get('hospitalAnalystPassword')
+            'password' => bcrypt($request->get('hospitalAnalystPassword'))
         ]);
         return response('created successfully', 201);
     }
@@ -49,7 +52,7 @@ class HospitalController extends Controller
      */
     public function show(Hospital $hospital)
     {
-        return response($hospital);
+        return response($hospital->query()->with(['patientAnalyst', 'hospitalAnalyst'])->first());
     }
 
     /**
@@ -65,12 +68,12 @@ class HospitalController extends Controller
         $hospital->patientAnalyst()->first()->update([
             'name' => $request->get('patientAnalystName'),
             'username' => $request->get('patientAnalystUsername'),
-            'password' => $request->get('patientAnalystPassword')
+            'password' => bcrypt($request->get('patientAnalystPassword'))
         ]);
         $hospital->hospitalAnalyst()->first()->update([
                 'name' => $request->get('hospitalAnalystName'),
                 'username' => $request->get('hospitalAnalystUsername'),
-                'password' => $request->get('hospitalAnalystPassword')
+                'password' => bcrypt($request->get('hospitalAnalystPassword'))
         ]);
         return response('updated successfully', 202);
     }
@@ -98,19 +101,19 @@ class HospitalController extends Controller
 
     public function addReport(Request $request, Hospital $hospital)
     {
-        $hospital->update([
+        auth()->user()->cast()->hospital->update([
             'emergencyReservedBeds' => $request->get('emergencyReservedBeds'),
             'intensiveCareReservedBeds' => $request->get('intensiveCareReservedBeds'),
             'reservedVentilators' => $request->get('reservedVentilators')
             ]);
 
-        $hospital->hospitalSummaries()->create([
+        auth()->user()->cast()->hospital->hospitalSummaries()->create([
             'hospitalAnalyst_id' => auth()->user()->id,
-            'emergencyBeds' => $hospital->emergencyBeds,
+            'emergencyBeds' => auth()->user()->cast()->hospital->emergencyBeds,
             'emergencyReservedBeds' => $request->get('emergencyReservedBeds'),
-            'intensiveCareBeds' => $hospital->intensiveCareBeds,
+            'intensiveCareBeds' => auth()->user()->cast()->hospital->intensiveCareBeds,
             'intensiveCareReservedBeds' => $request->get('intensiveCareReservedBeds'),
-            'ventilators' => $hospital->ventilators,
+            'ventilators' => auth()->user()->cast()->hospital->ventilators,
             'reservedVentilators' => $request->get('reservedVentilators')
         ]);
 

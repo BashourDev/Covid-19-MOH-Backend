@@ -15,9 +15,9 @@ class HospitalSummaryController extends Controller
      * @param Hospital $hospital
      * @return Response
      */
-    public function index(Hospital $hospital)
+    public function index()
     {
-        return response($hospital->hospitalSummaries()->orderByDesc('updated_at')->get());
+        return response(auth()->user()->cast()->hospital->hospitalSummaries()->orderByDesc('updated_at')->get());
     }
 
     /**
@@ -62,6 +62,16 @@ class HospitalSummaryController extends Controller
      */
     public function destroy(HospitalSummary $hospitalSummary)
     {
-        //
+        $hospitalSummary->delete();
+        $lastSummary = auth()->user()->cast()->hospital->hospitalSummaries->last();
+        if ($lastSummary) {
+            auth()->user()->cast()->hospital->update([
+                'emergencyReservedBeds' => $lastSummary->emergencyReservedBeds,
+                'intensiveCareReservedBeds' => $lastSummary->intensiveCareReservedBeds,
+                'reservedVentilators' => $lastSummary->reservedVentilators
+            ]);
+        }
+
+        return response('ok', 201);
     }
 }

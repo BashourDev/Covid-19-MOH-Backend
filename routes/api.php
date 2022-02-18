@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HospitalController;
+use App\Http\Controllers\HospitalSummaryController;
+use App\Http\Controllers\PatientController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,7 +41,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
                 Route::prefix('/{hospital}')->group(function () {
                     Route::get('/', [HospitalController::class, 'show']); // for showing a specific hospital
-                    Route::post('/add-report', [HospitalController::class, 'addReport']); // for updating the hospital report and creating a summary
                     Route::put('/update', [HospitalController::class, 'update']); // for updating an existing hospital and its staff
                     Route::delete('/delete', [HospitalController::class, 'destroy']); // for deleting a hospital and also its staff accounts
                 });
@@ -48,4 +49,36 @@ Route::middleware('auth:sanctum')->group(function () {
 
         });
     }
+
+    /*
+     * for Patient Analysts
+     */
+    {
+        Route::middleware('is_patient_analyst')->group(function () {
+            Route::prefix('/patients')->group(function () {
+                Route::get('/hospital-patients', [PatientController::class, 'hospitalPatients']);
+                Route::post('/{patient}', [PatientController::class, 'show']);
+                Route::post('/first-step/{hospital}', [PatientController::class, 'firstStep']);
+                Route::put('/second-step/{patient}', [PatientController::class, 'secondStep']);
+                Route::put('/third-step/{patient}', [PatientController::class, 'thirdStep']);
+                Route::put('/fourth-step/{patient}', [PatientController::class, 'fourthStep']);
+                Route::put('/fifth-step/{patient}', [PatientController::class, 'fifthStep']);
+                Route::delete('/{patient}/delete', [PatientController::class, 'destroy']);
+            });
+        });
+    }
+
+    /*
+     * for Hospital Analysts
+     */
+    {
+        Route::middleware('is_hospital_analyst')->group(function () {
+            Route::prefix('/hospital-reports')->group(function () {
+                Route::get('/', [HospitalSummaryController::class, 'index']); // for getting hospital Reports for a specific hospital
+                Route::post('/add-report', [HospitalController::class, 'addReport']); // for updating the hospital report and creating a summary
+                Route::delete('/delete/{hospitalSummary}', [HospitalSummaryController::class, 'destroy']);
+            });
+        });
+    }
+
 });

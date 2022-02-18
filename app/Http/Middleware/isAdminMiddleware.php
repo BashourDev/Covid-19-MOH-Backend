@@ -17,7 +17,7 @@ class isAdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (get_class(auth()->user()->cast() !== Admin::class)) {
+        if (get_class(auth()->user()->cast()) !== Admin::class) {
             return abort(403);
         }
         return $next($request);

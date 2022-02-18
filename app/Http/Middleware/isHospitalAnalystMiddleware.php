@@ -17,7 +17,7 @@ class isHospitalAnalystMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (get_class(auth()->user()->cast() !== HospitalAnalyst::class)) {
+        if (get_class(auth()->user()->cast()) !== HospitalAnalyst::class) {
             return abort(403);
         }
         return $next($request);
