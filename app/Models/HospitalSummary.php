@@ -16,4 +16,9 @@ class HospitalSummary extends Model
         return $this->belongsTo(Hospital::class, 'hospital_id', 'id');
     }
 
+    public function hospitalAnalyst()
+    {
+        return $this->belongsTo(HospitalAnalyst::class, 'hospitalAnalyst_id', 'id');
+    }
+
 }

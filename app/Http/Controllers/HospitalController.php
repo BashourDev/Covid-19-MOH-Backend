@@ -28,6 +28,15 @@ class HospitalController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'hospitalAnalystUsername' => 'unique:users,username',
+            'patientAnalystUsername' => 'unique:users,username',
+        ]);
+
+        if ($request->get('hospitalAnalystUsername') === $request->get('patientAnalystUsername')) {
+            abort(422);
+        }
+
         $hospital = Hospital::query()->create($request->only(['name', 'type', 'location', 'emergencyBeds', 'intensiveCareBeds', 'ventilators']));
         $hospital->patientAnalyst()->create([
             'role' => User::ROLE_PATIENT_ANALYST,
@@ -64,17 +73,29 @@ class HospitalController extends Controller
      */
     public function update(Request $request, Hospital $hospital)
     {
+
         $hospital->update($request->only(['name', 'type', 'location', 'emergencyBeds', 'intensiveCareReservedBeds', 'reservedVentilators']));
         $hospital->patientAnalyst()->first()->update([
             'name' => $request->get('patientAnalystName'),
             'username' => $request->get('patientAnalystUsername'),
-            'password' => bcrypt($request->get('patientAnalystPassword'))
         ]);
         $hospital->hospitalAnalyst()->first()->update([
                 'name' => $request->get('hospitalAnalystName'),
                 'username' => $request->get('hospitalAnalystUsername'),
-                'password' => bcrypt($request->get('hospitalAnalystPassword'))
         ]);
+
+        if ($request->get('updatePAPassword')) {
+            $hospital->patientAnalyst()->first()->update([
+                'password' => bcrypt($request->get('patientAnalystPassword'))
+            ]);
+        }
+
+        if ($request->get('updateHAPassword')) {
+            $hospital->hospitalAnalyst()->first()->update([
+                'password' => bcrypt($request->get('hospitalAnalystPassword'))
+            ]);
+        }
+
         return response('updated successfully', 202);
     }
 

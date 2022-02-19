@@ -17,7 +17,7 @@ class HospitalSummaryController extends Controller
      */
     public function index()
     {
-        return response(auth()->user()->cast()->hospital->hospitalSummaries()->orderByDesc('updated_at')->get());
+        return response(auth()->user()->cast()->hospital->hospitalSummaries()->with('hospitalAnalyst')->orderByDesc('updated_at')->get());
     }
 
     /**

@@ -23,155 +23,155 @@ class CreatePatientsTable extends Migration
             $table->string('name');
             $table->date('birthday');
             $table->boolean('gender'); //false for male, true for female
-            $table->string('job');
-            $table->string('address');
-            $table->integer('landline');
-            $table->integer('mobileNumber');
+            $table->string('job')->nullable();
+            $table->string('address')->nullable();
+            $table->string('landline')->nullable();
+            $table->string('mobileNumber')->nullable();
             $table->string('bloodType');
-            $table->double('height')->nullable();
-            $table->double('weight')->nullable();
+            $table->string('height')->nullable();
+            $table->string('weight')->nullable();
 
             // second part
-            $table->integer('symptomDaysBeforeAdmission')->nullable();
-            $table->string('reasonOfAdmission')->nullable();
-            $table->boolean('hasFever')->nullable();
+            $table->string('symptomDaysBeforeAdmission')->default('')->nullable();
+            $table->string('reasonOfAdmission')->default('')->nullable();
+            $table->boolean('hasFever')->default(false);
             $table->double('temperature')->nullable();
-            $table->integer('daysOfPreAdmissionFever')->nullable();
-            $table->boolean('responseToCetamol')->nullable();
-            $table->boolean('fatigue')->nullable();
-            $table->boolean('dryThroat')->nullable();
-            $table->boolean('sweating')->nullable();
-            $table->boolean('dehydration')->nullable();
-            $table->boolean('lossOfSmellAndTaste')->nullable();
-            $table->string('neuralSymptoms')->nullable();
-            $table->string('structuralSymptoms')->nullable();
-            $table->string('cardiacSymptoms')->nullable();
-            $table->string('digestiveSymptoms')->nullable();
-            $table->string('vascularSymptoms')->nullable();
-            $table->string('urinarySymptoms')->nullable();
-            $table->string('skinSymptoms')->nullable();
-            $table->string('ocularSymptoms')->nullable();
-            $table->string('chestListening')->nullable();
-            $table->string('oxygenationUponAdmission')->nullable();
+            $table->string('daysOfPreAdmissionFever')->default('')->nullable();
+            $table->boolean('responseToCetamol')->default(false);
+            $table->boolean('fatigue')->default(false);
+            $table->boolean('dryThroat')->default(false);
+            $table->boolean('sweating')->default(false);
+            $table->boolean('dehydration')->default(false);
+            $table->boolean('lossOfSmellAndTaste')->default(false);
+            $table->string('neuralSymptoms')->default('')->nullable();
+            $table->string('structuralSymptoms')->default('')->nullable();
+            $table->string('cardiacSymptoms')->default('')->nullable();
+            $table->string('digestiveSymptoms')->default('')->nullable();
+            $table->string('vascularSymptoms')->default('')->nullable();
+            $table->string('urinarySymptoms')->default('')->nullable();
+            $table->string('skinSymptoms')->default('')->nullable();
+            $table->string('ocularSymptoms')->default('')->nullable();
+            $table->string('chestListening')->default('')->nullable();
+            $table->string('oxygenationUponAdmission')->default('')->nullable();
 
             // female stuff
-            $table->boolean('reproductiveActivity')->nullable();
-            $table->boolean('isPregnant')->nullable();
+            $table->boolean('reproductiveActivity')->default(false);
+            $table->boolean('isPregnant')->default(false);
             $table->integer('ageOfFetus')->nullable();
 
-            $table->string('bloodGasUponAdmission')->nullable();
+            $table->string('bloodGasUponAdmission')->default('')->nullable();
 
             // bloodPressure
-            $table->boolean('arterialHypertension')->nullable();
-            $table->string('arterialHypertensionMedications')->nullable();
+            $table->boolean('arterialHypertension')->default(false);
+            $table->string('arterialHypertensionMedications')->default('')->nullable();
 
             // diabetes stuff
-            $table->boolean('diabetes')->nullable();
-            $table->string('diabetesOralTreatment')->nullable();
-            $table->boolean('diabetesInsulinTreatment')->nullable();
-            $table->string('diabetesInsulinType')->nullable();
-            $table->string('diabetesMixedOralAndInsulinTreatment')->nullable();
+            $table->boolean('diabetes')->default(false);
+            $table->string('diabetesOralTreatment')->default('')->nullable();
+            $table->boolean('diabetesInsulinTreatment')->default(false);
+            $table->string('diabetesInsulinType')->default('')->nullable();
+            $table->string('diabetesMixedOralAndInsulinTreatment')->default('')->nullable();
 
             // cholesterol and triglycerides
-            $table->boolean('highCholesterolAndTriglycerides')->nullable();
-            $table->string('cholesterolAndTriglycerides')->nullable();
+            $table->boolean('highCholesterolAndTriglycerides')->default(false);
+            $table->string('cholesterolAndTriglycerides')->default('')->nullable();
 
             // renal insufficiency
-            $table->boolean('renalInsufficiency')->nullable();
-            $table->boolean('renalInsufficiencyTests')->nullable();
+            $table->boolean('renalInsufficiency')->default(false);
+            $table->boolean('renalInsufficiencyTests')->default(false);
 
             // antecedents of coronal metaphors or expansions
-            $table->boolean('hasAntecedentsOfCoronalMetaphorsOrExpansions')->nullable();
-            $table->string('antecedentsOfCoronalMetaphorsOrExpansionsMedications')->nullable();
+            $table->boolean('hasAntecedentsOfCoronalMetaphorsOrExpansions')->default(false);
+            $table->string('antecedentsOfCoronalMetaphorsOrExpansionsMedications')->default('')->nullable();
 
             // breathing difficulties or asthma
-            $table->boolean('BreathingDifficultiesOrAsthma')->nullable();
-            $table->string('BreathingDifficultiesOrAsthmaTreatment')->nullable();
-            $table->string('otherRespiratoryProblems')->nullable();
+            $table->boolean('BreathingDifficultiesOrAsthma')->default(false);
+            $table->string('BreathingDifficultiesOrAsthmaTreatment')->default('')->nullable();
+            $table->string('otherRespiratoryProblems')->default('')->nullable();
 
             // arthritis
-            $table->boolean('arthritis')->nullable();
-            $table->string('arthritisMedications')->nullable();
+            $table->boolean('arthritis')->default(false);
+            $table->string('arthritisMedications')->default('')->nullable();
 
             // osteoporosis
-            $table->boolean('osteoporosis')->nullable();
-            $table->string('osteoporosisMedications')->nullable();
+            $table->boolean('osteoporosis')->default(false);
+            $table->string('osteoporosisMedications')->default('')->nullable();
 
             // liver disease
-            $table->boolean('hasLiverDisease')->nullable();
-            $table->string('liverDisease')->nullable();
+            $table->boolean('hasLiverDisease')->default(false);
+            $table->string('liverDisease')->default('')->nullable();
 
             // depression or anxiety
-            $table->boolean('hasDepressionOrAnxiety')->nullable();
-            $table->string('depressionOrAnxietyMedications')->nullable();
+            $table->boolean('hasDepressionOrAnxiety')->default(false);
+            $table->string('depressionOrAnxietyMedications')->default('')->nullable();
 
-            $table->string('otherDiseases')->nullable();
-            $table->string('otherMedications')->nullable();
+            $table->string('otherDiseases')->default('')->nullable();
+            $table->string('otherMedications')->default('')->nullable();
 
             // smoking
-            $table->boolean('isSmoker')->nullable();
-            $table->string('smokingQuantityAndDuration')->nullable();
-            $table->boolean('smokingQuitter')->nullable();
-            $table->string('smokingQuitterQuantityAndDuration')->nullable();
-            $table->boolean('privateHookah')->nullable();
-            $table->boolean('publicHookah')->nullable();
+            $table->boolean('isSmoker')->default(false);
+            $table->string('smokingQuantityAndDuration')->default('')->nullable();
+            $table->boolean('smokingQuitter')->default(false);
+            $table->string('smokingQuitterQuantityAndDuration')->default('')->nullable();
+            $table->boolean('privateHookah')->default(false);
+            $table->boolean('publicHookah')->default(false);
 
             // alcohol
-            $table->boolean('alcoholic')->nullable();
-            $table->string('hasDiet')->nullable();
-            $table->string('diet')->nullable();
+            $table->boolean('alcoholic')->default(false);
+            $table->boolean('hasDiet')->default(false)->nullable();
+            $table->string('diet')->default('')->nullable();
 
             // physical sports
-            $table->boolean('physicalSports')->nullable();
-            $table->string('physicalSportsType')->nullable();
-            $table->string('physicalSportsPace')->nullable();
+            $table->boolean('physicalSports')->default(false);
+            $table->string('physicalSportsType')->default('')->nullable();
+            $table->string('physicalSportsPace')->default('')->nullable();
 
             // precautionary measures
-            $table->boolean('woreFaceMask')->nullable();
-            $table->boolean('handWashing')->nullable();
-            $table->boolean('avoidCrowds')->nullable();
+            $table->boolean('woreFaceMask')->default(false);
+            $table->boolean('handWashing')->default(false);
+            $table->boolean('avoidCrowds')->default(false);
 
             // family
             $table->integer('contactedFamilyMembers')->nullable();
             $table->integer('familyMembersWithCovidSymptoms')->nullable();
 
             // part 3
-            $table->string('treatmentCourse')->nullable();
-            $table->boolean('givenAntivirus')->nullable();
-            $table->string('givenAntivirusType')->nullable();
+            $table->string('treatmentCourse')->default('')->nullable();
+            $table->boolean('givenAntivirus')->default(false);
+            $table->string('givenAntivirusType')->default('')->nullable();
 
-            $table->string('ctReport')->nullable();
-            $table->string('tests')->nullable();
+            $table->string('ctReport')->default('')->nullable();
+            $table->string('tests')->default('')->nullable();
 
-            $table->boolean('pcrResult')->nullable();
-            $table->boolean('requiredVentilation')->nullable();
+            $table->boolean('pcrResult')->default(false);
+            $table->boolean('requiredVentilation')->default(false);
             $table->integer('ventilationDuration')->nullable();
 
-            $table->boolean('clinicalImprovement')->nullable();
+            $table->boolean('clinicalImprovement')->default(false);
             $table->integer('daysOfFever')->nullable();
 
-            $table->string('mixing')->nullable();
+            $table->string('mixing')->default('')->nullable();
 
             // part 4
-            $table->boolean('death')->nullable();
-            $table->dateTime('deathDateTime')->nullable();
+            $table->boolean('death')->default(false);
+            $table->date('deathDateTime')->nullable();
 
-            $table->boolean('release')->nullable();
-            $table->dateTime('releaseDateTime')->nullable();
-            $table->string('statusUponRelease')->nullable();
-            $table->string('bloodGasUponRelease')->nullable();
+            $table->boolean('release')->default(false);
+            $table->date('releaseDateTime')->nullable();
+            $table->string('statusUponRelease')->default('')->nullable();
+            $table->string('bloodGasUponRelease')->default('')->nullable();
             $table->dateTime('bloodPressureUponRelease')->nullable();
-            $table->string('pulseUponRelease')->nullable();
-            $table->string('oxygenationUponRelease')->nullable();
-            $table->string('wbc')->nullable();
-            $table->string('crp')->nullable();
-            $table->string('residencyPeriod')->nullable();
+            $table->string('pulseUponRelease')->default('')->nullable();
+            $table->string('oxygenationUponRelease')->default('')->nullable();
+            $table->string('wbc')->default('')->nullable();
+            $table->string('crp')->default('')->nullable();
+            $table->string('residencyPeriod')->default('')->nullable();
 
             // part 5
             $table->date('returnToWorkOrNormalLife')->nullable();
-            $table->boolean('dyspnea')->nullable();
-            $table->boolean('laborOnLightOrMediumEfforts')->nullable();
-            $table->string('otherDemonstrations')->nullable();
+            $table->boolean('dyspnea')->default(false);
+            $table->boolean('laborOnLightOrMediumEfforts')->default(false);
+            $table->string('otherDemonstrations')->default('')->nullable();
 
             $table->timestamps();
         });

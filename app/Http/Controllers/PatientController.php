@@ -65,13 +65,13 @@ class PatientController extends Controller
 
     public function hospitalPatients(Request $request)
     {
-        return response(auth()->user()->cast()->hospital->patients()->where('name', 'like', '%'.$request->get('searchKey').'%')->get());
+        return response(auth()->user()->cast()->hospital->patients()->with('patientAnalyst')->where('patients.name', 'like', '%'.$request->get('searchKey').'%')->orderByDesc('id')->get());
     }
 
-    public function firstStep(Request $request, Hospital $hospital)
+    public function firstStep(Request $request)
     {
-            return response($hospital->patients()->create([
-                'step' => 1,
+            return response(auth()->user()->cast()->hospital->patients()->create([
+                'step' => 2,
                 'patientAnalyst_id' => auth()->user()->id,
                 'doctor' => $request->get('doctor'),
                 'name' => $request->get('name'),
@@ -89,10 +89,10 @@ class PatientController extends Controller
 
     public function secondStep(Request $request, Patient $patient)
     {
-        if ($patient->step < 2) {
-            $patient->step = 2;
+        if ($patient->step < 3) {
+            $patient->step = 3;
         }
-        return response($patient->update($request->only(['symptomDaysBeforeAdmission',
+        $patient->update($request->only(['symptomDaysBeforeAdmission',
                 'reasonOfAdmission',
                 'hasFever',
                 'temperature',
@@ -159,15 +159,16 @@ class PatientController extends Controller
                 'handWashing',
                 'avoidCrowds',
                 'contactedFamilyMembers',
-                'familyMembersWithCovidSymptoms'])));
+                'familyMembersWithCovidSymptoms']));
+        return response($patient);
     }
 
     public function thirdStep(Request $request, Patient $patient)
     {
-        if ($patient->step < 3) {
-            $patient->step = 3;
+        if ($patient->step < 4) {
+            $patient->step = 4;
         }
-        return response($patient->update($request->only(['treatmentCourse',
+        $patient->update($request->only(['treatmentCourse',
                 'givenAntivirus',
                 'givenAntivirusType',
                 'ctReport',
@@ -177,15 +178,16 @@ class PatientController extends Controller
                 'ventilationDuration',
                 'clinicalImprovement',
                 'daysOfFever',
-                'mixing'])));
+                'mixing']));
+        return response($patient);
     }
 
     public function fourthStep(Request $request, Patient $patient)
     {
-        if ($patient->step < 4) {
-            $patient->step = 4;
+        if ($patient->step < 5) {
+            $patient->step = 5;
         }
-        return response($patient->update($request->only(['death',
+        $patient->update($request->only(['death',
                 'deathDateTime',
                 'release',
                 'releaseDateTime',
@@ -196,7 +198,8 @@ class PatientController extends Controller
                 'oxygenationUponRelease',
                 'wbc',
                 'crp',
-                'residencyPeriod'])));
+                'residencyPeriod']));
+        return response($patient);
     }
 
     public function fifthStep(Request $request, Patient $patient)
@@ -204,10 +207,11 @@ class PatientController extends Controller
         if ($patient->step < 5) {
             $patient->step = 5;
         }
-        return response($patient->update($request->only(['returnToWorkOrNormalLife',
+        $patient->update($request->only(['returnToWorkOrNormalLife',
                 'dyspnea',
                 'laborOnLightOrMediumEfforts',
-                'otherDemonstrations'])));
+                'otherDemonstrations']));
+        return response($patient);
     }
 
 }

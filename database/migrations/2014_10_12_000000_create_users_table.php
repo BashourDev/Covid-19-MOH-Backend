@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->foreignId('hospital_id')->nullable()->constrained('hospitals')->onDelete('cascade');
             $table->string('name');
-            $table->string('username');
+            $table->string('username')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->integer('role');

@@ -11,4 +11,14 @@ class Patient extends Model
 
     protected $guarded = [];
 
+    public function patientAnalyst()
+    {
+        return $this->belongsTo(PatientAnalyst::class, 'patientAnalyst_id', 'id');
+    }
+
+    public function hospital()
+    {
+        return $this->belongsTo(Hospital::class, 'hospital_id', 'id');
+    }
+
 }

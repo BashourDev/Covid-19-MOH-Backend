@@ -57,8 +57,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::middleware('is_patient_analyst')->group(function () {
             Route::prefix('/patients')->group(function () {
                 Route::get('/hospital-patients', [PatientController::class, 'hospitalPatients']);
-                Route::post('/{patient}', [PatientController::class, 'show']);
-                Route::post('/first-step/{hospital}', [PatientController::class, 'firstStep']);
+                Route::get('/{patient}', [PatientController::class, 'show']);
+                Route::post('/first-step', [PatientController::class, 'firstStep']);
                 Route::put('/second-step/{patient}', [PatientController::class, 'secondStep']);
                 Route::put('/third-step/{patient}', [PatientController::class, 'thirdStep']);
                 Route::put('/fourth-step/{patient}', [PatientController::class, 'fourthStep']);
