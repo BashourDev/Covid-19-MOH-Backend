@@ -6,6 +6,7 @@ use App\Models\Hospital;
 use App\Models\HospitalSummary;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 
 class HospitalSummaryController extends Controller
 {
@@ -74,4 +75,12 @@ class HospitalSummaryController extends Controller
 
         return response('ok', 201);
     }
+
+    public function allReports(Request $request)
+    {
+        $start = Carbon::parse($request->input('start'))->startOfDay();
+        $end = Carbon::parse($request->input('end'))->endOfDay();
+        return response(HospitalSummary::query()->with(['hospitalAnalyst', 'hospital'])->whereBetween('hospital_summaries.created_at', [$start, $end])->orderByDesc('created_at')->get());
+    }
+
 }

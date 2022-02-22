@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Hospital;
 use App\Models\HospitalSummary;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class HospitalController extends Controller
@@ -151,6 +153,22 @@ class HospitalController extends Controller
             $query = $query->whereBetween('updated_at', [$request->get('start'), $request->get('end')]);
         }
         return response($query->get());
+    }
+
+    public function barChartPatients(Request $request)
+    {
+        $start = Carbon::parse($request->input('start'))->startOfDay();
+        $end = Carbon::parse($request->input('end'))->endOfDay();
+
+        return response(Hospital::query()->withCount([
+            'diseasedPatients'=> function (Builder $query) use($start, $end) {
+            $query->whereBetween('updated_at', [$start, $end]);
+        }, 'releasedPatients'=> function (Builder $query) use($start, $end) {
+            $query->whereBetween('updated_at', [$start, $end]);
+        }, 'residentPatients'=> function (Builder $query) use($start, $end) {
+            $query->whereBetween('updated_at', [$start, $end]);
+        }
+        ])->get());
     }
 
 }

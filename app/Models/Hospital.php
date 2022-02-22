@@ -22,6 +22,21 @@ class Hospital extends Model
         return $this->hasMany(Patient::class, 'hospital_id', 'id');
     }
 
+    public function diseasedPatients()
+    {
+        return $this->hasMany(Patient::class, 'hospital_id', 'id')->where('patients.death', '=', true);
+    }
+
+    public function releasedPatients()
+    {
+        return $this->hasMany(Patient::class, 'hospital_id', 'id')->where('patients.release', '=', true);
+    }
+
+    public function residentPatients()
+    {
+        return $this->hasMany(Patient::class, 'hospital_id', 'id')->where([['patients.release', '=', false], ['patients.death', '=', false]]);
+    }
+
     public function patientAnalyst()
     {
         return $this->hasOne(PatientAnalyst::class, 'hospital_id', 'id');

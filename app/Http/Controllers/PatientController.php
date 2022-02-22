@@ -70,21 +70,39 @@ class PatientController extends Controller
 
     public function firstStep(Request $request)
     {
-            return response(auth()->user()->cast()->hospital->patients()->create([
-                'step' => 2,
-                'patientAnalyst_id' => auth()->user()->id,
-                'doctor' => $request->get('doctor'),
-                'name' => $request->get('name'),
-                'birthday' => $request->get('birthday'),
-                'gender' => $request->get('gender'),
-                'job' => $request->get('job'),
-                'address' => $request->get('address'),
-                'landline'  => $request->get('landline'),
-                'mobileNumber' => $request->get('mobileNumber'),
-                'bloodType' => $request->get('bloodType'),
-                'height' => $request->get('height'),
-                'weight' => $request->get('weight')
-            ]));
+            if ($request->get('id')) {
+                $patient = Patient::query()->find($request->get('id'));
+                $patient->update([
+                    'doctor' => $request->get('doctor'),
+                    'name' => $request->get('name'),
+                    'birthday' => $request->get('birthday'),
+                    'gender' => $request->get('gender'),
+                    'job' => $request->get('job'),
+                    'address' => $request->get('address'),
+                    'landline'  => $request->get('landline'),
+                    'mobileNumber' => $request->get('mobileNumber'),
+                    'bloodType' => $request->get('bloodType'),
+                    'height' => $request->get('height'),
+                    'weight' => $request->get('weight')
+                ]);
+                return response($patient);
+            } else {
+                return response(auth()->user()->cast()->hospital->patients()->create([
+                    'step' => 2,
+                    'patientAnalyst_id' => auth()->user()->id,
+                    'doctor' => $request->get('doctor'),
+                    'name' => $request->get('name'),
+                    'birthday' => $request->get('birthday'),
+                    'gender' => $request->get('gender'),
+                    'job' => $request->get('job'),
+                    'address' => $request->get('address'),
+                    'landline'  => $request->get('landline'),
+                    'mobileNumber' => $request->get('mobileNumber'),
+                    'bloodType' => $request->get('bloodType'),
+                    'height' => $request->get('height'),
+                    'weight' => $request->get('weight')
+                ]));
+            }
     }
 
     public function secondStep(Request $request, Patient $patient)
