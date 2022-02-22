@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +15,11 @@ class AuthController extends Controller
             'password'=>$request->get('password')
         ])){
             $token=Auth::user()->createToken('myToken'.Auth::user()->id)->plainTextToken;
-            return \response(['user'=>Auth::user(),'token'=>$token]);
+            $user = Auth::user()->cast();
+            if ($user->role !== User::ROLE_Admin) {
+                $user = $user->loadMissing('hospital');
+            }
+            return \response(['user'=> $user,'token'=>$token]);
         }
 
         else {
