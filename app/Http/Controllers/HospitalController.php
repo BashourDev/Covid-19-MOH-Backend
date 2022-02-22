@@ -122,7 +122,7 @@ class HospitalController extends Controller
         return response(Hospital::query()->where('type', '=', Hospital::HOSPITAL_PRIVATE)->where('name', 'like', '%'.$request->get('name').'%')->get());
     }
 
-    public function addReport(Request $request, Hospital $hospital)
+    public function addReport(Request $request)
     {
         auth()->user()->cast()->hospital->update([
             'emergencyReservedBeds' => $request->get('emergencyReservedBeds'),

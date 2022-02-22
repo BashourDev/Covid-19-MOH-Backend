@@ -60,6 +60,7 @@ class PatientController extends Controller
      */
     public function destroy(Patient $patient)
     {
+        $this->authorize('update', [$patient]);
         return response($patient->delete());
     }
 
@@ -72,6 +73,7 @@ class PatientController extends Controller
     {
             if ($request->get('id')) {
                 $patient = Patient::query()->find($request->get('id'));
+                $this->authorize('update', [$patient]);
                 $patient->update([
                     'doctor' => $request->get('doctor'),
                     'name' => $request->get('name'),
@@ -107,6 +109,8 @@ class PatientController extends Controller
 
     public function secondStep(Request $request, Patient $patient)
     {
+        $this->authorize('update', [$patient]);
+
         if ($patient->step < 3) {
             $patient->step = 3;
         }
@@ -183,6 +187,8 @@ class PatientController extends Controller
 
     public function thirdStep(Request $request, Patient $patient)
     {
+        $this->authorize('update', [$patient]);
+
         if ($patient->step < 4) {
             $patient->step = 4;
         }
@@ -202,6 +208,8 @@ class PatientController extends Controller
 
     public function fourthStep(Request $request, Patient $patient)
     {
+        $this->authorize('update', [$patient]);
+
         if ($patient->step < 5) {
             $patient->step = 5;
         }
@@ -222,6 +230,8 @@ class PatientController extends Controller
 
     public function fifthStep(Request $request, Patient $patient)
     {
+        $this->authorize('update', [$patient]);
+
         if ($patient->step < 5) {
             $patient->step = 5;
         }

@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Patient;
+use App\Models\HospitalSummary;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class PatientPolicy
+class HospitalSummaryPolicy
 {
     use HandlesAuthorization;
 
@@ -25,12 +25,12 @@ class PatientPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Patient  $patient
+     * @param  \App\Models\HospitalSummary  $hospitalSummary
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Patient $patient)
+    public function view(User $user, HospitalSummary $hospitalSummary)
     {
-        return auth()->user()->cast()->hospital_id === $patient->hospital_id;
+        //
     }
 
     /**
@@ -48,34 +48,34 @@ class PatientPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Patient  $patient
+     * @param  \App\Models\HospitalSummary  $hospitalSummary
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Patient $patient)
+    public function update(User $user, HospitalSummary $hospitalSummary)
     {
-        return auth()->user()->cast()->hospital_id === $patient->hospital_id;
+        //
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Patient  $patient
+     * @param  \App\Models\HospitalSummary  $hospitalSummary
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Patient $patient)
+    public function delete(User $user, HospitalSummary $hospitalSummary)
     {
-        //
+        return auth()->user()->cast()->hospital_id === $hospitalSummary->hospital_id;
     }
 
     /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Patient  $patient
+     * @param  \App\Models\HospitalSummary  $hospitalSummary
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Patient $patient)
+    public function restore(User $user, HospitalSummary $hospitalSummary)
     {
         //
     }
@@ -84,12 +84,11 @@ class PatientPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Patient  $patient
+     * @param  \App\Models\HospitalSummary  $hospitalSummary
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Patient $patient)
+    public function forceDelete(User $user, HospitalSummary $hospitalSummary)
     {
         //
     }
-
 }

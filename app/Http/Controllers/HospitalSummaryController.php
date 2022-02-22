@@ -63,6 +63,7 @@ class HospitalSummaryController extends Controller
      */
     public function destroy(HospitalSummary $hospitalSummary)
     {
+        $this->authorize('delete', [$hospitalSummary]);
         $hospitalSummary->delete();
         $lastSummary = auth()->user()->cast()->hospital->hospitalSummaries->last();
         if ($lastSummary) {
