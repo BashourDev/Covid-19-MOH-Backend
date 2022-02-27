@@ -66,7 +66,7 @@ class PatientController extends Controller
 
     public function hospitalPatients(Request $request)
     {
-        return response(auth()->user()->cast()->hospital->patients()->with('patientAnalyst')->where('patients.name', 'like', '%'.$request->get('searchKey').'%')->orderByDesc('id')->get());
+        return response(auth()->user()->cast()->hospital->patients()->with('patientAnalyst')->where('patients.name', 'like', '%'.$request->get('searchKey').'%')->orderByDesc('id')->paginate(20, ['*'], '', $request->get('pageNum')));
     }
 
     public function firstStep(Request $request)

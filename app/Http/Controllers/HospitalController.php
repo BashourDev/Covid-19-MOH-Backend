@@ -114,12 +114,12 @@ class HospitalController extends Controller
 
     public function publicHospitals(Request $request)
     {
-        return response(Hospital::query()->where('type', '=', Hospital::HOSPITAL_PUBLIC)->where('name', 'like', '%'.$request->get('name').'%')->get());
+        return response(Hospital::query()->where('type', '=', Hospital::HOSPITAL_PUBLIC)->where('name', 'like', '%'.$request->get('name').'%')->paginate(20, ['*'], '', $request->get('pageNum')));
     }
 
     public function privateHospitals(Request $request)
     {
-        return response(Hospital::query()->where('type', '=', Hospital::HOSPITAL_PRIVATE)->where('name', 'like', '%'.$request->get('name').'%')->get());
+        return response(Hospital::query()->where('type', '=', Hospital::HOSPITAL_PRIVATE)->where('name', 'like', '%'.$request->get('name').'%')->paginate(20, ['*'], '', $request->get('pageNum')));
     }
 
     public function addReport(Request $request)
@@ -157,8 +157,8 @@ class HospitalController extends Controller
 
     public function barChartPatients(Request $request)
     {
-        $start = Carbon::parse($request->input('start'))->startOfDay();
-        $end = Carbon::parse($request->input('end'))->endOfDay();
+        $start = Carbon::parse($request->get('start'))->startOfDay();
+        $end = Carbon::parse($request->get('end'))->endOfDay();
 
         return response(Hospital::query()->withCount([
             'diseasedPatients'=> function (Builder $query) use($start, $end) {
