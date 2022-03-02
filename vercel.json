@@ -9,7 +9,7 @@
     }],
     "env": {
         "APP_ENV": "production",
-        "APP_DEBUG": "true",
+
         "APP_URL": "https://api.badev.ml",
 
         "APP_CONFIG_CACHE": "/tmp/config.php",
