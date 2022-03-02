@@ -22,7 +22,7 @@
         "DB_PORT":"5432",
         "DB_DATABASE":"d7cdi3plqgdmo5",
         "DB_USERNAME":"wgefwrajlohnjh",
-        "DB_PASSWORD":"the Whomping Willow and the Deathly Hallows part 3",
+        "DB_PASSWORD":"6ffecc2e3c0bcac5b36adedd68d588192afd05fe93b284f61faf6777e8eb12f3",
 
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
