@@ -13,6 +13,17 @@
         "APP_URL": "https://api.badev.ml",
         "APP_KEY": "base64:oSEeBIcFT+9JGo5l8ieqJvnX0Z2fsr53JFnf5f5FEPo=",
 
+        "SANCTUM_STATEFUL_DOMAINS": "www.badev.ml",
+        "SESSION_DOMAIN": "badev.ml",
+        "SESSION_LIFETIME": "180000",
+
+        "DB_CONNECTION":"pgsql",
+        "DB_HOST":"ec2-3-219-204-29.compute-1.amazonaws.com",
+        "DB_PORT":"5432",
+        "DB_DATABASE":"d7cdi3plqgdmo5",
+        "DB_USERNAME":"wgefwrajlohnjh",
+        "DB_PASSWORD":"the Whomping Willow and the Deathly Hallows part 3",
+
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
