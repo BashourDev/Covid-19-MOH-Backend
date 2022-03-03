@@ -63,7 +63,7 @@ class HospitalController extends Controller
      */
     public function show(Hospital $hospital)
     {
-        return response($hospital->query()->with(['patientAnalyst', 'hospitalAnalyst'])->first());
+        return response($hospital->load('patientAnalyst', 'hospitalAnalyst'));
     }
 
     /**

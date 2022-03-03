@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     {
         Route::middleware('is_admin')->group(function () {
             Route::prefix('/hospitals')->group(function () {
+
                 Route::get('/bar-chart-hospital-patients', [HospitalController::class, 'barChartPatients']);
                 Route::get('/', [HospitalController::class, 'index']); // all hospitals
                 Route::get('/private', [HospitalController::class, 'privateHospitals']); // private hospitals only
@@ -45,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
                     Route::put('/update', [HospitalController::class, 'update']); // for updating an existing hospital and its staff
                     Route::delete('/delete', [HospitalController::class, 'destroy']); // for deleting a hospital and also its staff accounts
                 });
+
             });
 
             Route::get('/all-reports', [HospitalSummaryController::class, 'allReports']);
