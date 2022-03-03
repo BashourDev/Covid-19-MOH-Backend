@@ -64,14 +64,22 @@ class HospitalSummaryController extends Controller
     public function destroy(HospitalSummary $hospitalSummary)
     {
         $this->authorize('delete', [$hospitalSummary]);
-        $hospitalSummary->delete();
         $lastSummary = auth()->user()->cast()->hospital->hospitalSummaries->last();
-        if ($lastSummary) {
-            auth()->user()->cast()->hospital->update([
-                'emergencyReservedBeds' => $lastSummary->emergencyReservedBeds,
-                'intensiveCareReservedBeds' => $lastSummary->intensiveCareReservedBeds,
-                'reservedVentilators' => $lastSummary->reservedVentilators
-            ]);
+
+        if ($lastSummary->id === $hospitalSummary->id) {
+            $hospitalSummary->delete();
+
+            $lastSummary = auth()->user()->cast()->hospital->hospitalSummaries->last();
+
+            if ($lastSummary) {
+                auth()->user()->cast()->hospital->update([
+                    'emergencyReservedBeds' => $lastSummary->emergencyReservedBeds,
+                    'intensiveCareReservedBeds' => $lastSummary->intensiveCareReservedBeds,
+                    'reservedVentilators' => $lastSummary->reservedVentilators
+                ]);
+            }
+        } else {
+            $hospitalSummary->delete();
         }
 
         return response('ok', 201);
