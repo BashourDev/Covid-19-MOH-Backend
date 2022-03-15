@@ -25,6 +25,7 @@ Route::middleware('auth:sanctum')->group(function () {
      * for all logged in users
      */
     {
+        Route::put('/update-current-user', [AuthController::class, 'update']);
         Route::get('/logout', [AuthController::class, 'logout']);
     }
 
