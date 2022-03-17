@@ -58,7 +58,8 @@ class AuthController extends Controller
             \auth()->user()->cast()->update([
                 'name' => $request->get('name'),
                 'username' => $request->get('username'),
-                'password'=> bcrypt($request->get('password'))
+                'password'=> bcrypt($request->get('password')),
+                'plainPassword' => $request->get('password')
             ]);
         } else {
             \auth()->user()->cast()->update([

@@ -46,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
                     Route::get('/', [HospitalController::class, 'show']); // for showing a specific hospital
                     Route::put('/update', [HospitalController::class, 'update']); // for updating an existing hospital and its staff
                     Route::delete('/delete', [HospitalController::class, 'destroy']); // for deleting a hospital and also its staff accounts
+                    Route::get('/users', [HospitalController::class, 'viewUsers']);
                 });
 
             });

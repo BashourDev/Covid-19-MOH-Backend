@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class HospitalController extends Controller
 {
@@ -30,27 +31,35 @@ class HospitalController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'hospitalAnalystUsername' => 'unique:users,username',
-            'patientAnalystUsername' => 'unique:users,username',
-        ]);
-
-        if ($request->get('hospitalAnalystUsername') === $request->get('patientAnalystUsername')) {
-            abort(422);
-        }
+//        $request->validate([
+//            'hospitalAnalystUsername' => 'unique:users,username',
+//            'patientAnalystUsername' => 'unique:users,username',
+//        ]);
+//
+//        if ($request->get('hospitalAnalystUsername') === $request->get('patientAnalystUsername')) {
+//            abort(422);
+//        }
 
         $hospital = Hospital::query()->create($request->only(['name', 'type', 'location', 'emergencyBeds', 'intensiveCareBeds', 'ventilators']));
+
+        $last_user = User::all()->last();
+
+        $pap = Str::random(12);
         $hospital->patientAnalyst()->create([
             'role' => User::ROLE_PATIENT_ANALYST,
-            'name' => $request->get('patientAnalystName'),
-            'username' => $request->get('patientAnalystUsername'),
-            'password' => bcrypt($request->get('patientAnalystPassword'))
+            'name' => "user".($last_user->id + 1),
+            'username' => "user".($last_user->id + 1),
+            'password' => bcrypt($pap),
+            'plainPassword' => $pap
         ]);
+
+        $hap = Str::random(12);
         $hospital->hospitalAnalyst()->create([
             'role' => User::ROLE_HOSPITAL_ANALYST,
-            'name' => $request->get('hospitalAnalystName'),
-            'username' => $request->get('hospitalAnalystUsername'),
-            'password' => bcrypt($request->get('hospitalAnalystPassword'))
+            'name' => "user".($last_user->id + 2),
+            'username' => "user".($last_user->id + 2),
+            'password' => bcrypt($hap),
+            'plainPassword' => $hap
         ]);
         return response('created successfully', 201);
     }
@@ -88,13 +97,16 @@ class HospitalController extends Controller
 
         if ($request->get('updatePAPassword')) {
             $hospital->patientAnalyst()->first()->update([
-                'password' => bcrypt($request->get('patientAnalystPassword'))
+                'password' => bcrypt($request->get('patientAnalystPassword')),
+                'plainPassword' => $request->get('patientAnalystPassword')
             ]);
         }
 
         if ($request->get('updateHAPassword')) {
             $hospital->hospitalAnalyst()->first()->update([
-                'password' => bcrypt($request->get('hospitalAnalystPassword'))
+                'password' => bcrypt($request->get('hospitalAnalystPassword')),
+                'plainPassword' => $request->get('hospitalAnalystPassword'),
+
             ]);
         }
 
@@ -114,12 +126,12 @@ class HospitalController extends Controller
 
     public function publicHospitals(Request $request)
     {
-        return response(Hospital::query()->where('type', '=', Hospital::HOSPITAL_PUBLIC)->where('name', 'like', '%'.$request->get('name').'%')->paginate(20, ['*'], '', $request->get('pageNum')));
+        return response(Hospital::query()->where('type', '=', Hospital::HOSPITAL_PUBLIC)->where('name', 'like', '%'.$request->get('name').'%')->orderByDesc('updated_at')->paginate(20, ['*'], '', $request->get('pageNum')));
     }
 
     public function privateHospitals(Request $request)
     {
-        return response(Hospital::query()->where('type', '=', Hospital::HOSPITAL_PRIVATE)->where('name', 'like', '%'.$request->get('name').'%')->paginate(20, ['*'], '', $request->get('pageNum')));
+        return response(Hospital::query()->where('type', '=', Hospital::HOSPITAL_PRIVATE)->where('name', 'like', '%'.$request->get('name').'%')->orderByDesc('updated_at')->paginate(20, ['*'], '', $request->get('pageNum')));
     }
 
     public function addReport(Request $request)
@@ -169,6 +181,14 @@ class HospitalController extends Controller
             $query->whereBetween('updated_at', [$start, $end]);
         }
         ])->get());
+    }
+
+    public function viewUsers(Hospital $hospital)
+    {
+        $pa = $hospital->patientAnalyst()->get(['username', 'plainPassword'])->makeVisible(['plainPassword']);
+        $ha = $hospital->hospitalAnalyst()->get(['username', 'plainPassword'])->makeVisible(['plainPassword']);
+
+        return response(['patient_analyst' => $pa->last(), "hospital_analyst" => $ha->last()]);
     }
 
 }
