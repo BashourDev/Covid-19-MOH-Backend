@@ -17,12 +17,6 @@
         "SESSION_DOMAIN": ".badev.ml",
         "SESSION_LIFETIME": "60",
 
-        "DB_CONNECTION":"pgsql",
-        "DB_HOST":"ec2-3-219-204-29.compute-1.amazonaws.com",
-        "DB_PORT":"5432",
-        "DB_DATABASE":"d7cdi3plqgdmo5",
-        "DB_USERNAME":"wgefwrajlohnjh",
-        "DB_PASSWORD":"6ffecc2e3c0bcac5b36adedd68d588192afd05fe93b284f61faf6777e8eb12f3",
 
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
