@@ -11,7 +11,6 @@
         "APP_ENV": "production",
         "APP_DEBUG": "true",
         "APP_URL": "https://api.badev.ml",
-        "APP_KEY": "base64:oSEeBIcFT+9JGo5l8ieqJvnX0Z2fsr53JFnf5f5FEPo=",
 
         "SANCTUM_STATEFUL_DOMAINS": "www.badev.ml",
         "SESSION_DOMAIN": ".badev.ml",
