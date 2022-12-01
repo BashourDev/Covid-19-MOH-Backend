@@ -20,7 +20,16 @@ class HospitalController extends Controller
      */
     public function index()
     {
+        if (auth()->user()->role === User::ROLE_PROVINCIAL_ADMIN) {
+            return response(auth()->user()->cast()->hospitals);
+
+        }
         return response(Hospital::all()->get());
+    }
+
+    public function landing()
+    {
+        return response(Hospital::query()->with(['province', 'profilePicture'])->get());
     }
 
     /**
@@ -40,7 +49,12 @@ class HospitalController extends Controller
 //            abort(422);
 //        }
 
-        $hospital = Hospital::query()->create($request->only(['name', 'type', 'location', 'emergencyBeds', 'intensiveCareBeds', 'ventilators']));
+        $hospital = Hospital::query()->create($request->only(['province_id', 'name', 'type', 'location', 'emergencyBeds', 'intensiveCareBeds', 'ventilators']));
+
+        $hospital->is_activated = true;
+        $hospital->save();
+
+        $hospital->addMediaFromRequest('image')->toMediaCollection();
 
         $last_user = User::all()->last();
 
@@ -64,6 +78,39 @@ class HospitalController extends Controller
         return response('created successfully', 201);
     }
 
+    public function invitationRequest(Request $request)
+    {
+        $request->validate([
+            'hospitalAnalystUsername' => 'unique:users,username',
+            'patientAnalystUsername' => 'unique:users,username',
+        ]);
+
+        if ($request->get('hospitalAnalystUsername') === $request->get('patientAnalystUsername')) {
+            abort(422);
+        }
+
+        $hospital = Hospital::query()->create($request->only(['province_id', 'name', 'type', 'location', 'emergencyBeds', 'intensiveCareBeds', 'ventilators']));
+
+        $hospital->addMediaFromRequest('image')->toMediaCollection();
+
+        $hospital->patientAnalyst()->create([
+            'role' => User::ROLE_PATIENT_ANALYST,
+            'name' => $request->get('patientAnalystName'),
+            'username' => $request->get('patientAnalystUsername'),
+            'password' => bcrypt($request->get("patientAnalystPassword")),
+            'plainPassword' => $request->get("patientAnalystPassword")
+        ]);
+
+        $hospital->hospitalAnalyst()->create([
+            'role' => User::ROLE_HOSPITAL_ANALYST,
+            'name' => $request->get('hospitalAnalystName'),
+            'username' => $request->get('hospitalAnalystUsername'),
+            'password' => bcrypt($request->get("hospitalAnalystPassword")),
+            'plainPassword' => $request->get("hospitalAnalystPassword")
+        ]);
+        return response('created successfully', 201);
+    }
+
     /**
      * Display the specified resource.
      *
@@ -72,7 +119,12 @@ class HospitalController extends Controller
      */
     public function show(Hospital $hospital)
     {
-        return response($hospital->load('patientAnalyst', 'hospitalAnalyst'));
+        return response($hospital->load('patientAnalyst', 'hospitalAnalyst', 'province', 'profilePicture'));
+    }
+
+    public function showResidentCount(Hospital $hospital)
+    {
+        return response($hospital->loadCount(['reservedEmergencyBeds', 'reservedICUBeds', 'reservedVentilators']));
     }
 
     /**
@@ -85,7 +137,13 @@ class HospitalController extends Controller
     public function update(Request $request, Hospital $hospital)
     {
 
-        $hospital->update($request->only(['name', 'type', 'location', 'emergencyBeds', 'intensiveCareReservedBeds', 'reservedVentilators']));
+        $hospital->update($request->only(['province_id', 'name', 'type', 'location', 'emergencyBeds', 'intensiveCareReservedBeds', 'reservedVentilators']));
+
+        if ($request->get('update_profile_pic')) {
+            $hospital->clearMediaCollection();
+            $hospital->addMediaFromRequest('image')->toMediaCollection();
+        }
+
         $hospital->patientAnalyst()->first()->update([
             'name' => $request->get('patientAnalystName'),
             'username' => $request->get('patientAnalystUsername'),
@@ -126,12 +184,20 @@ class HospitalController extends Controller
 
     public function publicHospitals(Request $request)
     {
-        return response(Hospital::query()->where('type', '=', Hospital::HOSPITAL_PUBLIC)->where('name', 'like', '%'.$request->get('name').'%')->orderByDesc('updated_at')->paginate(20, ['*'], '', $request->get('pageNum')));
+        if (auth()->user()->role === User::ROLE_PROVINCIAL_ADMIN) {
+            return response(auth()->user()->cast()->hospitals()->with(['province'])->withCount(['reservedEmergencyBeds', 'reservedICUBeds', 'reservedVentilators'])->where('type', '=', Hospital::HOSPITAL_PUBLIC)->where('is_activated', '=', true)->where('name', 'like', '%'.$request->get('name').'%')->orderByDesc('updated_at')->paginate(20, ['*'], '', $request->get('pageNum')));
+
+        }
+        return response(Hospital::query()->with(['province'])->withCount(['reservedEmergencyBeds', 'reservedICUBeds', 'reservedVentilators'])->where('type', '=', Hospital::HOSPITAL_PUBLIC)->where('is_activated', '=', true)->where('name', 'like', '%'.$request->get('name').'%')->orderByDesc('updated_at')->paginate(20, ['*'], '', $request->get('pageNum')));
     }
 
     public function privateHospitals(Request $request)
     {
-        return response(Hospital::query()->where('type', '=', Hospital::HOSPITAL_PRIVATE)->where('name', 'like', '%'.$request->get('name').'%')->orderByDesc('updated_at')->paginate(20, ['*'], '', $request->get('pageNum')));
+        if (auth()->user()->role === User::ROLE_PROVINCIAL_ADMIN) {
+            return response(auth()->user()->cast()->hospitals()->with(['province'])->withCount(['reservedEmergencyBeds', 'reservedICUBeds', 'reservedVentilators'])->where('type', '=', Hospital::HOSPITAL_PRIVATE)->where('is_activated', '=', true)->where('name', 'like', '%'.$request->get('name').'%')->orderByDesc('updated_at')->paginate(20, ['*'], '', $request->get('pageNum')));
+
+        }
+        return response(Hospital::query()->with(['province'])->withCount(['reservedEmergencyBeds', 'reservedICUBeds', 'reservedVentilators'])->where('type', '=', Hospital::HOSPITAL_PRIVATE)->where('is_activated', '=', true)->where('name', 'like', '%'.$request->get('name').'%')->orderByDesc('updated_at')->paginate(20, ['*'], '', $request->get('pageNum')));
     }
 
     public function addReport(Request $request)
@@ -149,7 +215,8 @@ class HospitalController extends Controller
             'intensiveCareBeds' => auth()->user()->cast()->hospital->intensiveCareBeds,
             'intensiveCareReservedBeds' => $request->get('intensiveCareReservedBeds'),
             'ventilators' => auth()->user()->cast()->hospital->ventilators,
-            'reservedVentilators' => $request->get('reservedVentilators')
+            'reservedVentilators' => $request->get('reservedVentilators'),
+            'status' => $request->get('status')
         ]);
 
         return response('report created successfully', 201);
@@ -172,7 +239,19 @@ class HospitalController extends Controller
         $start = Carbon::parse($request->get('start'))->startOfDay();
         $end = Carbon::parse($request->get('end'))->endOfDay();
 
-        return response(Hospital::query()->withCount([
+        if (auth()->user()->role === User::ROLE_PROVINCIAL_ADMIN) {
+            return response(auth()->user()->cast()->hospitals()->where('is_activated', '=', true)->withCount([
+                'diseasedPatients'=> function (Builder $query) use($start, $end) {
+                    $query->whereBetween('updated_at', [$start, $end]);
+                }, 'releasedPatients'=> function (Builder $query) use($start, $end) {
+                    $query->whereBetween('updated_at', [$start, $end]);
+                }, 'residentPatients'=> function (Builder $query) use($start, $end) {
+                    $query->whereBetween('updated_at', [$start, $end]);
+                }
+            ])->get());
+        }
+
+        return response(Hospital::query()->where('is_activated', '=', true)->withCount([
             'diseasedPatients'=> function (Builder $query) use($start, $end) {
             $query->whereBetween('updated_at', [$start, $end]);
         }, 'releasedPatients'=> function (Builder $query) use($start, $end) {
@@ -189,6 +268,31 @@ class HospitalController extends Controller
         $ha = $hospital->hospitalAnalyst()->get(['username', 'plainPassword'])->makeVisible(['plainPassword']);
 
         return response(['patient_analyst' => $pa->last(), "hospital_analyst" => $ha->last()]);
+    }
+
+    public function accept(Hospital $hospital)
+    {
+        $hospital->is_activated = true;
+        $hospital->save();
+
+        return response('ok');
+    }
+
+    public function requests(Request $request)
+    {
+        if (auth()->user()->role === User::ROLE_PROVINCIAL_ADMIN) {
+            return response(auth()->user()->cast()->hospitals()->where('is_activated', '=', false)->where(function ($query) use ($request) {
+                $query->where('name', 'like', '%'.$request->get('search').'%')->orWhereRelation('province', function ($query2) use ($request) {
+                    $query2->where('name', 'like', '%'.$request->get('search').'%');
+                });
+            })->with(['patientAnalyst', 'hospitalAnalyst', 'province', 'profilePicture'])->get());
+        }
+
+        return response(Hospital::query()->where('is_activated', '=', false)->where(function ($query) use ($request) {
+            $query->where('name', 'like', '%'.$request->get('search').'%')->orWhereRelation('province', function ($query2) use ($request) {
+                $query2->where('name', 'like', '%'.$request->get('search').'%');
+            });
+        })->with(['patientAnalyst', 'hospitalAnalyst', 'province', 'profilePicture'])->get());
     }
 
 }

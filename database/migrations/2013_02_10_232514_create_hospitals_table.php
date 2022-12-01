@@ -15,6 +15,7 @@ class CreateHospitalsTable extends Migration
     {
         Schema::create('hospitals', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('province_id')->constrained('provinces')->onDelete('cascade');
             $table->string('name');
             $table->integer('type'); // 0 for public, 1 for private
             $table->string('location');
@@ -24,6 +25,8 @@ class CreateHospitalsTable extends Migration
             $table->integer('intensiveCareReservedBeds')->nullable();
             $table->integer('ventilators');
             $table->integer('reservedVentilators')->nullable();
+
+            $table->boolean('is_activated')->default(false);
             $table->timestamps();
         });
     }

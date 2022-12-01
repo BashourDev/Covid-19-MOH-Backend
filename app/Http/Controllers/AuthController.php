@@ -19,7 +19,7 @@ class AuthController extends Controller
         ])){
             $token=Auth::user()->createToken('myToken'.Auth::user()->id)->plainTextToken;
             $user = Auth::user()->cast();
-            if ($user->role !== User::ROLE_Admin) {
+            if ($user->role !== User::ROLE_Admin || $user->role !== User::ROLE_PROVINCIAL_ADMIN) {
                 $user = $user->loadMissing('hospital');
             }
             return \response(['user'=> $user,'token'=>$token]);

@@ -15,6 +15,7 @@ class User extends Authenticatable
     const ROLE_Admin = 0;
     const ROLE_PATIENT_ANALYST = 1;
     const ROLE_HOSPITAL_ANALYST = 2;
+    const ROLE_PROVINCIAL_ADMIN = 3;
 
     /**
      * The attributes that are mass assignable.
@@ -22,6 +23,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'province_id',
         'name',
         'username',
         'password',
@@ -62,6 +64,9 @@ class User extends Authenticatable
                 break;
             case User::ROLE_HOSPITAL_ANALYST:
                 $newClass .= "HospitalAnalyst";
+                break;
+            case User::ROLE_PROVINCIAL_ADMIN:
+                $newClass .= "ProvincialAdmin";
                 break;
         }
         $obj = new $newClass;

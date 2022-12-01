@@ -3,8 +3,10 @@
 namespace App\Http;
 
 use App\Http\Middleware\isAdminMiddleware;
+use App\Http\Middleware\isAdminOrProvincialAdminMiddleware;
 use App\Http\Middleware\isHospitalAnalystMiddleware;
 use App\Http\Middleware\isPatientAnalystMiddleware;
+use App\Http\Middleware\isProvincialAdminMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -68,6 +70,8 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'is_admin' => isAdminMiddleware::class,
         'is_patient_analyst' => isPatientAnalystMiddleware::class,
-        'is_hospital_analyst' => isHospitalAnalystMiddleware::class
+        'is_hospital_analyst' => isHospitalAnalystMiddleware::class,
+        'is_provincial_admin' => isProvincialAdminMiddleware::class,
+        'is_admin_or_provincial_admin' => isAdminOrProvincialAdminMiddleware::class
     ];
 }

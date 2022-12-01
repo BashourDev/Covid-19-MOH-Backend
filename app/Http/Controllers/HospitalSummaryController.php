@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Hospital;
 use App\Models\HospitalSummary;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
@@ -89,6 +90,12 @@ class HospitalSummaryController extends Controller
     {
         $start = Carbon::parse($request->input('start'))->startOfDay();
         $end = Carbon::parse($request->input('end'))->endOfDay();
+
+        if (auth()->user()->role === User::ROLE_PROVINCIAL_ADMIN) {
+            return response(auth()->user()->cast()->hospitalsSummaries()->with(['hospitalAnalyst', 'hospital'])->whereBetween('hospital_summaries.created_at', [$start, $end])->orderByDesc('created_at')->get());
+
+        }
+
         return response(HospitalSummary::query()->with(['hospitalAnalyst', 'hospital'])->whereBetween('hospital_summaries.created_at', [$start, $end])->orderByDesc('created_at')->get());
     }
 

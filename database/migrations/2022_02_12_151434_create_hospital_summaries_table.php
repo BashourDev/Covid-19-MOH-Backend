@@ -23,6 +23,7 @@ class CreateHospitalSummariesTable extends Migration
             $table->integer('intensiveCareReservedBeds');
             $table->integer('ventilators');
             $table->integer('reservedVentilators');
+            $table->integer('status')->default(1);
             $table->timestamps();
         });
     }

@@ -144,6 +144,7 @@ class CreatePatientsTable extends Migration
             $table->string('tests')->default('')->nullable();
 
             $table->boolean('pcrResult')->default(false);
+            $table->boolean('requiredICU')->default(false);
             $table->boolean('requiredVentilation')->default(false);
             $table->integer('ventilationDuration')->nullable();
 
@@ -172,6 +173,9 @@ class CreatePatientsTable extends Migration
             $table->boolean('dyspnea')->default(false);
             $table->boolean('laborOnLightOrMediumEfforts')->default(false);
             $table->string('otherDemonstrations')->default('')->nullable();
+
+            $table->boolean('require_icu')->nullable();
+            $table->boolean('is_gtd')->nullable();
 
             $table->timestamps();
         });

@@ -9,6 +9,9 @@ class HospitalSummary extends Model
 {
     use HasFactory;
 
+    const STATUS_INACCURATE = 0;
+    const STATUS_ACCURATE = 1;
+
     protected $guarded = [];
 
     public function hospital()

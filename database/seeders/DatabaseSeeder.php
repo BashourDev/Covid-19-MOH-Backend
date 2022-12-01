@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Province;
+use App\Models\ProvincialAdmin;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -20,6 +22,18 @@ class DatabaseSeeder extends Seeder
             'username' => 'admin',
             'password' => bcrypt('admin'),
             'role' => 0
+        ]);
+
+        $province = Province::create([
+            'name' => 'homs'
+        ]);
+
+        ProvincialAdmin::query()->create([
+            'name' => 'prov admin',
+            'username' => 'provadmin',
+            'password' => bcrypt('provadmin'),
+            'role' => 3,
+            'province_id' => $province->id
         ]);
     }
 }

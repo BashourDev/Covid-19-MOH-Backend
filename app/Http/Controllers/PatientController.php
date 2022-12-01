@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Hospital;
 use App\Models\Patient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
 
 class PatientController extends Controller
 {
@@ -182,6 +184,28 @@ class PatientController extends Controller
                 'avoidCrowds',
                 'contactedFamilyMembers',
                 'familyMembersWithCovidSymptoms']));
+
+        $patient = Patient::query()->find($patient->id);
+
+        $res = Http::post('http://localhost:5000/predict_icu', [
+            "sex" => (int) $patient->gender,
+            "age" => Carbon::parse($patient->birthday)->age,
+            "inmsupr" => (int) $patient->responseToCetamol,
+            "pneumonia" => (int) $patient->chestListening,
+            "diabetes" => (int) $patient->diabetes,
+            "asthma" => (int) $patient->BreathingDifficultiesOrAsthma,
+            "copd" => (int) $patient->BreathingDifficultiesOrAsthma,
+            "hypertension" => (int) $patient->arterialHypertension,
+            "cardiovascular" => (int) $patient->highCholesterolAndTriglycerides,
+            "renal_chronic" => (int) $patient->renalInsufficiency,
+            "obesity" => ((int) $patient->weight) >= 150 ? 1 : 0,
+            "tobacco" => (int) $patient->isSmoker,
+            "days_prior_to_treatment" => (int) $patient->daysOfPreAdmissionFever
+        ]);
+
+        $patient->require_icu = $res->json();
+        $patient->save();
+
         return response($patient);
     }
 
@@ -198,11 +222,36 @@ class PatientController extends Controller
                 'ctReport',
                 'tests',
                 'pcrResult',
+                'requiredICU',
                 'requiredVentilation',
                 'ventilationDuration',
                 'clinicalImprovement',
                 'daysOfFever',
                 'mixing']));
+
+        $patient = Patient::query()->find($patient->id);
+
+        $res = Http::post('http://localhost:5000/predict_death', [
+            "sex" => (int) $patient->gender,
+            "age" => (int) Carbon::parse($patient->birthday)->age,
+            "inmsupr" => (int) $patient->responseToCetamol,
+            "pneumonia" => (int) $patient->chestListening,
+            "diabetes" => (int) $patient->diabetes,
+            "asthma" => (int) $patient->BreathingDifficultiesOrAsthma,
+            "copd" => (int) $patient->BreathingDifficultiesOrAsthma,
+            "hypertension" => (int) $patient->arterialHypertension,
+            "cardiovascular" => (int) $patient->highCholesterolAndTriglycerides,
+            "renal_chronic" => (int) $patient->renalInsufficiency,
+            "obesity" => ((int) $patient->weight) >= 150 ? 1 : 0,
+            "tobacco" => (int) $patient->isSmoker,
+            "days_prior_to_treatment" => (int) $patient->daysOfPreAdmissionFever,
+            "intubed" => (int) $patient->requiredVentilation,
+            "icu" => (int) $patient->requiredICU
+        ]);
+
+        $patient->is_gtd = $res->json();
+        $patient->save();
+
         return response($patient);
     }
 
